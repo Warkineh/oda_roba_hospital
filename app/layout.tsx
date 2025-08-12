@@ -21,15 +21,15 @@ export const metadata = {
   description: "Quality healthcare services in Oromia, Ethiopia",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  // Server-side cookie access
+  // Proper async cookie handling for Next.js 14+
   const cookieStore = cookies();
-  const langCookie = cookieStore.get('oda-roba-language')?.value;
-  const initialLanguage = langCookie || 'en';
+  const langCookie = cookieStore.get('oda-roba-language');
+  const initialLanguage = langCookie?.value || 'en';
 
   return (
     <html lang={initialLanguage} className="scroll-smooth" suppressHydrationWarning>
@@ -44,7 +44,6 @@ export default function RootLayout({
         className={`${outfit.className} ${ovo.className} antialiased leading-8 overflow-x-hidden dark:bg-darkTheme dark:text-white`}
         suppressHydrationWarning
       >
-        {/* Client-side component wrapper */}
         <ClientLanguageProvider initialLanguage={initialLanguage}>
           {children}
         </ClientLanguageProvider>
@@ -53,11 +52,16 @@ export default function RootLayout({
   );
 }
 
-// Client-side component
-function ClientLanguageProvider({ children, initialLanguage }: {
-  children: ReactNode;
-  initialLanguage: string;
+// Client component must be defined separately
+function ClientLanguageProvider({ 
+  children, 
+  initialLanguage 
+}: { 
+  children: ReactNode; 
+  initialLanguage: string 
 }) {
+  'use client'; // Mark as client component
+  
   return (
     <LanguageProvider initialLanguage={initialLanguage}>
       {children}
