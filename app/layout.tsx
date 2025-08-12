@@ -26,8 +26,8 @@ export default async function RootLayout({
 }: {
   children: ReactNode;
 }) {
-  // Proper async cookie handling for Next.js 14+
-  const cookieStore = cookies();
+  // Proper async cookie handling
+  const cookieStore = await cookies(); // Note the await here
   const langCookie = cookieStore.get('oda-roba-language');
   const initialLanguage = langCookie?.value || 'en';
 
